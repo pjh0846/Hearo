@@ -69,6 +69,26 @@ def main():
     
     for split_name, split_df in datasets.items():
         print(f"Processing {split_name} set ({len(split_df)} samples)...")
+        
+        # Undersample 'other' class to balance dataset
+        target_df = split_df[split_df['target_label'] != OTHER_CLASS_LABEL]
+        other_df = split_df[split_df['target_label'] == OTHER_CLASS_LABEL]
+        
+        # Calculate target sample size for 'other' class (2.5x average of target classes)
+        num_target_samples = len(target_df)
+        num_target_classes = len(TARGET_CLASSES)
+        avg_per_class = num_target_samples / num_target_classes
+        other_sample_size = int(avg_per_class * 2.5)
+        
+        # Randomly sample 'other' class
+        if len(other_df) > other_sample_size:
+            other_df = other_df.sample(n=other_sample_size, random_state=42)
+            print(f"  Undersampled 'other' class: {len(other_df)} samples (from {len(split_df[split_df['target_label'] == OTHER_CLASS_LABEL])})")
+        
+        # Combine target and sampled 'other' classes
+        split_df = pd.concat([target_df, other_df]).sample(frac=1, random_state=42).reset_index(drop=True)
+        print(f"  Balanced dataset: {len(split_df)} samples")
+        
         X = []
         y = []
         

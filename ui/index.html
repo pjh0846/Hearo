@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hearo - 소리 감지 시스템</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎧 Hearo</h1>
+        </div>
+
+        <div class="upload-section">
+            <label class="file-upload" for="fileInput">
+                <div class="file-upload-icon">📁</div>
+                <div class="file-upload-text">오디오/비디오 파일 선택</div>
+                <div style="color: #999; font-size: 14px; margin-top: 8px;">
+                    WAV, MP3, MP4 지원
+                </div>
+                <input type="file" id="fileInput" accept="audio/*,video/*">
+            </label>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>분석 중...</p>
+        </div>
+
+        <div class="result-card" id="resultCard">
+            <div class="sound-icon-container">
+                <div class="sound-waves" id="soundWaves"></div>
+                <div class="sound-icon" id="soundIcon">🔊</div>
+            </div>
+
+            <div class="sound-name" id="soundName"></div>
+        </div>
+    </div>
+
+    <script src="static/script.js"></script>
+</body>
+
+</html>
