@@ -31,7 +31,7 @@ env/
 # /models/
 
 # Uploads (임시 파일)
-/uploads/
+/uploads_seld/
 
 # Logs
 *.log

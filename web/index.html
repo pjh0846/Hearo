@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hearo</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎧 Hearo</h1>
+        </div>
+
+        <div class="upload-section">
+            <label class="file-upload" for="fileInput">
+                <div class="file-upload-icon">📁</div>
+                <div class="file-upload-text">오디오 파일 선택</div>
+                <div style="color: #999; font-size: 14px; margin-top: 8px;">
+                    WAV, MP3
+                </div>
+                <input type="file" id="fileInput" accept="audio/*">
+            </label>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>분석 중...</p>
+        </div>
+
+        <!-- 결과 표시 영역 -->
+        <div class="result-section" id="resultSection">
+            <!-- 방향 레이더 -->
+            <div class="radar-container">
+                <div class="radar">
+                    <div class="radar-label top">정면</div>
+                    <div class="radar-label right">오른쪽</div>
+                    <div class="radar-label bottom">뒤</div>
+                    <div class="radar-label left">왼쪽</div>
+                    <div class="radar-center">👤</div>
+                    <div id="soundMarkers"></div>
+                </div>
+            </div>
+
+            <!-- 타임라인 컨트롤 -->
+            <div class="timeline-controls" id="timelineControls">
+                <button class="play-button" id="playButton">▶️</button>
+                <div class="timeline-slider-container">
+                    <input type="range" id="timelineSlider" min="0" max="100" value="0" step="1">
+                    <div class="timeline-time">
+                        <span id="currentTime">0.0s</span> / <span id="totalTime">0.0s</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 감지된 소리 목록 -->
+            <div class="detection-list" id="detectionList"></div>
+        </div>
+
+        <!-- 소리 없음 -->
+        <div class="no-sound" id="noSound">
+            <div class="no-sound-icon">🔇</div>
+            <p>감지된 소리가 없습니다</p>
+        </div>
+    </div>
+
+    <script src="static/script.js"></script>
+</body>
+
+</html>

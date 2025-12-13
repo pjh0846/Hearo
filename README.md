@@ -1,4 +1,4 @@
-# 🎧 Hearo - 청각 장애인을 위한 소리 인식 시스템
+# 🎧 Hearo - SELD 기반 소리 감지 시스템
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
@@ -9,26 +9,36 @@
 
 ## 📋 프로젝트 개요
 
-**Hearo**는 청각 장애인을 위한 **실시간 소리 인식 및 분석 시스템**입니다.
+**Hearo**는 청각 장애인을 위한 **실시간 소리 인식 및 방향 감지 시스템**입니다.
 
-딥러닝 기반의 소리 분류와 **Shazam 스타일 fingerprint 매칭** 기술을 결합하여:
-- 🎯 **11가지 환경음** 자동 분류
+SELD(Sound Event Localization and Detection) 기술과 **Shazam 스타일 fingerprint 매칭**을 결합하여:
+- 🎯 **14가지 환경음** 실시간 분류
+- 📍 **소리 방향 감지** (360도 방위각)
 - 🔔 **사용자 정의 소리** 인식 (초인종, 알람 등 개인 맞춤)
-- 📊 **긴급도, 세기, 거리** 등 소리 특징 분석
+- 📊 **스테레오 오디오** 분석
 
 ## ✨ 주요 기능
 
-### 1. 🎯 소리 종류 분류 (11개 클래스)
+### 1. 🎯 SELD - 소리 종류 및 방향 감지
 
 | 카테고리 | 소리 종류 |
 |---------|----------|
-| 🚨 위험 | 사이렌, 자동차 경적, 유리 깨지는 소리 |
-| 🚗 교통 | 기차, 엔진 |
-| 🏠 생활 | 문 노크, 발소리, 알람 |
-| 👶 사람/동물 | 아기 울음, 개 짖는 소리 |
-| ❓ 기타 | 미분류 소리 |
+| 🚨 위험 | 충돌음, 화재, 비명 (남성/여성) |
+| 🏠 생활 | 문 노크, 발소리, 알람, 전화 |
+| 👶 사람/동물 | 아기 울음, 개 짖는 소리, 말소리 (남성/여성) |
+| 🎵 기타 | 피아노, 엔진 |
 
-### 2. 🔔 커스텀 소리 탐지 (Shazam 스타일)
+**총 14개 클래스** - 각 소리의 방향(방위각)까지 실시간 감지
+
+### 2. 📍 방향 감지
+
+스테레오 오디오 분석을 통해 소리의 방향을 4방향으로 표시:
+- **정면** (↑) : -45° ~ 45°
+- **왼쪽** (←) : -135° ~ -45°
+- **오른쪽** (→) : 45° ~ 135°
+- **뒤쪽** (↓) : 135° ~ 180° / -180° ~ -135°
+
+### 3. 🔔 커스텀 소리 탐지
 
 사용자가 직접 녹음한 소리를 등록하여 인식:
 - **초인종** - 집 초인종, 아파트 초인종 등
@@ -36,15 +46,6 @@
 - **개인 알람** - 사용자 맞춤 알림음
 
 > 💡 `templates/` 폴더에 `.wav` 파일을 추가하면 자동으로 인식됩니다!
-
-### 3. 📊 4가지 소리 특징 분석
-
-| 특징 | 설명 | 분석 방법 |
-|-----|------|----------|
-| **소리 종류** | 11개 클래스 분류 | CNN + Mel-spectrogram |
-| **긴급도** | 높음/보통/낮음 | 소리 종류(60%) + 음향 특징(40%) |
-| **세기** | 상/중/하 | RMS 에너지 기반 |
-| **거리** | 가까움/보통/멂 | 고주파 감쇠 패턴 분석 |
 
 ## 🚀 빠른 시작
 
@@ -56,124 +57,64 @@ git clone https://github.com/pjh0846/Hearo.git
 cd Hearo
 
 # 패키지 설치
-pip install torch torchvision torchaudio librosa numpy pandas scikit-learn flask flask-cors
-
-# (선택) 비디오 파일 지원
-pip install moviepy
+pip install torch torchvision torchaudio librosa numpy scipy flask flask-cors
 ```
 
 ### 실행 방법
 
-#### 1️⃣ 웹 UI 실행
+#### 웹 UI 실행
 ```bash
-cd ui
+cd web
 python app.py
 # 브라우저에서 http://localhost:5000 접속
-```
-
-#### 2️⃣ 명령줄 테스트
-```bash
-# 기본 분석
-python test_audio_features.py <파일경로>
-
-# 세부 정보 표시
-python test_audio_features.py <파일경로> --details
-
-# 예시
-python test_audio_features.py data/raw/ESC-50/audio/1-100032-A-0.wav
-```
-
-### 출력 예시
-
-```
-============================================================
-🎵  Hearo - 소리 특징 분석 결과
-============================================================
-
-🔊 소리 종류: 사이렌 (siren)
-   신뢰도: 80.88%
-
-🟡 긴급도: 보통 (0.66)
-   ├─ 기본 가중치: 0.95
-   ├─ 음향 긴급도: 0.23
-   │  ├─ 주파수 중심: 0.09
-   │  ├─ 변화율: 0.50
-   │  ├─ 급격한 변화: 0.10
-   │  └─ 빠르기: 0.33
-
-📊 세  기: 상 (0.76) ███████
-📌 거  리: 보통 (0.37)
-
-============================================================
-
-💬 요약: 보통 긴급도의 상 크기의 사이렌 소리가 보통에서 감지되었습니다.
 ```
 
 ## 📁 프로젝트 구조
 
 ```
 Hearo/
-├── 📂 data/
-│   ├── raw/                    # 원본 ESC-50 데이터셋
-│   ├── processed/              # 전처리된 학습 데이터
-│   └── classified/             # 클래스별 분류 데이터
+├── 📂 backend/                 # 백엔드 코드
+│   ├── seld/                   # SELD 모델 추론 엔진
+│   │   ├── inference.py        # 메인 추론 로직
+│   │   ├── inference_utils.py  # 오디오 처리 유틸
+│   │   ├── model.py            # SELD 모델 정의
+│   │   └── weights/            # 학습된 가중치
+│   ├── custom/                 # 커스텀 소리 탐지
+│   │   └── custom_detector.py  # Fingerprint 기반 탐지
+│   └── config.py               # 설정 파일
 │
-├── 📂 src/
-│   ├── config.py               # 설정 파일
-│   ├── data/
-│   │   └── make_dataset.py     # 데이터셋 생성
-│   ├── features/
-│   │   └── audio_features.py   # 오디오 특징 추출
-│   ├── models/
-│   │   ├── model.py            # LightweightCNN 모델 정의
-│   │   ├── train_model.py      # 모델 학습
-│   │   ├── test_model.py       # 모델 평가
-│   │   ├── predict.py          # 예측 및 특징 분석
-│   │   └── custom_detector.py  # 커스텀 소리 탐지 (Fingerprint)
-│   └── utils/
-│       └── organize_data.py    # 데이터 정리 유틸
-│
-├── 📂 models/
-│   └── hearo_model.pth         # 학습된 모델 가중치
-│
-├── 📂 templates/               # 🔔 커스텀 소리 템플릿
-│   ├── doorbellA.wav           # 초인종 소리들
-│   ├── doorbellB.wav
-│   ├── microwave.wav           # 전자레인지 알림
-│   ├── LG.wav                  # LG 알림음
-│   └── SAMSUNG.wav             # 삼성 알림음
-│
-├── 📂 ui/                      # 웹 UI
+├── 📂 web/                     # 웹 UI
 │   ├── app.py                  # Flask 백엔드
 │   ├── index.html              # 메인 페이지
 │   └── static/
 │       ├── style.css           # 스타일시트
 │       └── script.js           # 프론트엔드 로직
 │
+├── 📂 templates/               # 🔔 커스텀 소리 템플릿
+├── 📂 data/                    # 데이터셋
+│
 └── README.md
 ```
 
-## 🏗️ 모델 아키텍처
+## 🏗️ SELD 아키텍처
 
-### LightweightCNN
+### SELD 모델 (Sound Event Localization and Detection)
 
 ```
-Input: Mel-spectrogram (128 × time)
-    ↓
-Conv2D (32) → BatchNorm → ReLU → MaxPool
-    ↓
-Conv2D (64) → BatchNorm → ReLU → MaxPool
-    ↓
-Conv2D (128) → BatchNorm → ReLU → MaxPool
-    ↓
-Conv2D (256) → BatchNorm → ReLU → MaxPool
-    ↓
-Global Average Pooling
-    ↓
-Dropout (0.5)
-    ↓
-FC → 11 classes
+Stereo Audio Input (L/R channels)
+        ↓
+Multi-head Feature Extraction
+    ↓               ↓
+SED Branch      DOA Branch
+(분류)           (방향 추정)
+    ↓               ↓
+14 Classes    Azimuth (방위각)
 ```
+
+**특징:**
+- 스테레오 입력으로 좌/우 채널 정보 활용
+- Multi-task learning으로 분류와 방향을 동시 학습
+- DCASE2020 챌린지 기반 모델
 
 ### 커스텀 소리 탐지 (Fingerprint Matching)
 
@@ -192,27 +133,6 @@ Template Audio           Input Audio
               Similarity Score
 ```
 
-## 📊 데이터셋
-
-- **ESC-50**: Environmental Sound Classification
-  - 50개 클래스, 2000개 오디오 클립 (각 5초)
-  - 본 프로젝트: 청각 장애인 관련 **10개 클래스 + 기타** 사용
-
-## 🛠️ 학습하기
-
-```bash
-# 1. 데이터 전처리
-cd src/data
-python make_dataset.py
-
-# 2. 모델 학습
-cd ../models
-python train_model.py
-
-# 3. 모델 평가
-python test_model.py
-```
-
 ## 🔔 커스텀 소리 등록하기
 
 1. `templates/` 폴더에 `.wav` 파일 추가
@@ -228,27 +148,25 @@ cp my_doorbell.wav templates/초인종.wav
 
 | 구분 | 확장자 |
 |-----|-------|
-| 오디오 | `.wav`, `.mp3`, `.flac` |
-| 비디오 | `.mp4`, `.avi`, `.mov`, `.mkv`, `.flv` |
+| 오디오 | `.wav` (스테레오 권장) |
 
-> 비디오 파일은 자동으로 오디오가 추출되어 분석됩니다.
+> ⚠️ **중요**: SELD 모델은 **스테레오 오디오**가 필요합니다. 모노 오디오는 방향 감지가 불가능합니다.
 
 ## 🔧 기술 스택
 
 | 분야 | 기술 |
 |-----|-----|
 | Deep Learning | PyTorch |
-| Audio Processing | Librosa |
+| Audio Processing | Librosa, SciPy |
 | Web Backend | Flask, Flask-CORS |
-| Data Processing | NumPy, Pandas, Scikit-learn |
-| Video Processing | MoviePy (선택) |
+| SELD Model | DCASE2020 기반 |
 
 ## 📈 향후 계획
 
 - [ ] 실시간 마이크 입력 지원
-- [ ] 모바일 앱 개발 (React Native)
-- [ ] 다중 소리 동시 감지
-- [ ] 소리 방향 감지 (스테레오/마이크 배열)
+- [ ] 모바일 앱 개발
+- [ ] 다중 소리 동시 감지 개선
+- [ ] 고도(elevation) 감지 추가
 - [ ] 사용자 맞춤 긴급도 설정
 - [ ] 진동/시각적 알림 연동
 

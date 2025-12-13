@@ -1,0 +1,437 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    max-width: 700px;
+    width: 100%;
+    padding: 40px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 32px;
+    color: #1a1a2e;
+}
+
+.header .subtitle {
+    color: #666;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+.upload-section {
+    margin-bottom: 20px;
+}
+
+.file-upload {
+    border: 2px dashed #0f3460;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #f0f4ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.file-upload:hover {
+    border-color: #e94560;
+    background: #fff0f3;
+}
+
+.file-upload input {
+    display: none;
+}
+
+.file-upload-icon {
+    font-size: 24px;
+}
+
+.file-upload-text {
+    color: #0f3460;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* 로딩 */
+.loading {
+    text-align: center;
+    padding: 40px;
+    display: none;
+}
+
+.loading.show {
+    display: block;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #e94560;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 16px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* 결과 섹션 */
+.result-section {
+    display: none;
+    animation: fadeIn 0.5s;
+}
+
+.result-section.show {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 레이더 */
+.radar-container {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.radar {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    position: relative;
+    border: 3px solid #e94560;
+    box-shadow: 0 0 30px rgba(233, 69, 96, 0.3);
+}
+
+/* 레이더 그리드 */
+.radar::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.radar::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.radar-label {
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.radar-label.top {
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.radar-label.right {
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.radar-label.bottom {
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.radar-label.left {
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.radar-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    z-index: 10;
+}
+
+/* 소리 마커 */
+.sound-marker {
+    position: absolute;
+    font-size: 32px;
+    transform: translate(-50%, -50%);
+    animation: pulse 1.5s ease-in-out infinite;
+    cursor: pointer;
+    transition: transform 0.3s;
+    z-index: 5;
+}
+
+.sound-marker:hover {
+    transform: translate(-50%, -50%) scale(1.3);
+}
+
+/* 중앙 마커 (커스텀 소리) */
+.sound-marker.center-marker {
+    z-index: 20;
+    font-size: 48px;
+}
+
+.sound-marker.urgent {
+    animation: urgentPulse 0.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+}
+
+@keyframes urgentPulse {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+}
+
+/* 감지 목록 */
+.detection-list {
+    margin-top: 30px;
+}
+
+.detection-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: #f8f9ff;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border-left: 4px solid #0f3460;
+    transition: all 0.3s;
+}
+
+.detection-item:hover {
+    background: #f0f4ff;
+    transform: translateX(5px);
+}
+
+.detection-item.urgent {
+    border-left-color: #e94560;
+    background: #fff0f3;
+}
+
+.detection-icon {
+    font-size: 40px;
+}
+
+.detection-info {
+    flex: 1;
+}
+
+.detection-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.detection-direction {
+    font-size: 14px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.detection-arrow {
+    font-size: 36px;
+    color: #0f3460;
+}
+
+.detection-arrow.urgent {
+    color: #e94560;
+}
+
+/* 소리 없음 */
+.no-sound {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+    animation: fadeIn 0.5s;
+}
+
+.no-sound.show {
+    display: block;
+}
+
+.no-sound-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.no-sound p {
+    color: #666;
+    font-size: 18px;
+}
+
+/* 타임라인 컨트롤 */
+.timeline-controls {
+    display: none; /* 초기에는 숨김 */
+    align-items: center;
+    gap: 16px;
+    margin: 24px 0;
+    padding: 16px;
+    background: #f8f9ff;
+    border-radius: 12px;
+    border: 2px solid #e0e7ff;
+}
+
+.play-button {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: #0f3460;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+
+.play-button:hover {
+    background: #e94560;
+    transform: scale(1.1);
+}
+
+.play-button:active {
+    transform: scale(0.95);
+}
+
+.timeline-slider-container {
+    flex: 1;
+    min-width: 0;
+}
+
+.timeline-slider-container input[type="range"] {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: #ddd;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.timeline-slider-container input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #e94560;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.timeline-slider-container input[type="range"]::-webkit-slider-thumb:hover {
+    background: #ff5570;
+    transform: scale(1.2);
+}
+
+.timeline-slider-container input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #e94560;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.timeline-slider-container input[type="range"]::-moz-range-thumb:hover {
+    background: #ff5570;
+    transform: scale(1.2);
+}
+
+.timeline-time {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    margin-top: 8px;
+    font-weight: 600;
+}
+
+/* 소리 마커 이동 애니메이션 */
+.sound-marker {
+    position: absolute;
+    font-size: 32px;
+    transform: translate(-50%, -50%);
+    animation: pulse 1.5s ease-in-out infinite;
+    cursor: pointer;
+    z-index: 5;
+    /* 부드러운 위치 이동 애니메이션 */
+    transition: left 0.3s ease, top 0.3s ease, transform 0.3s ease;
+}
